@@ -1,0 +1,15 @@
+{
+  "name": "slopbreak",
+  "version": "3.1.0",
+  "description": "PS4-only single-page jailbreak, payload and tools host",
+  "main": "index.html",
+  "scripts": {
+    "build": "babel includes/js/index.js --out-file includes/js/index-legacy.js --presets=@babel/preset-env",
+    "watch": "babel includes/js/index.js --out-file includes/js/index-legacy.js --presets=@babel/preset-env --watch"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.24.1",
+    "@babel/core": "^7.24.1",
+    "@babel/preset-env": "^7.24.1"
+  }
+}

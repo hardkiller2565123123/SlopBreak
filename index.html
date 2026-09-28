@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title>SlopBreak</title>
+    <meta name="description" content="SlopBreak PS4 jailbreak and payload host">
+    <link rel="icon" href="includes/assets/icons/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./includes/css/app.css">
+    <script>
+        window.slopBreakIsPS4 = navigator.userAgent.indexOf('PlayStation 4') !== -1;
+        document.documentElement.className += window.slopBreakIsPS4 ? ' ps4-client' : ' non-ps4-client';
+    </script>
+</head>
+<body>
+<div id="ps4OnlyGate" class="ps4-only-gate">
+    <div class="ps4-only-card">
+        <div class="slopbreak-mark">SB</div>
+        <h1>SlopBreak</h1>
+        <p>Open this site on a PS4.</p>
+    </div>
+</div>
+<main class="mainContainer">
+    <header class="topbar">
+        <button class="brand" type="button" data-page="home" aria-label="SlopBreak Home">
+            <img src="includes/assets/icons/slopbreak.svg" alt="">
+            <span>SlopBreak</span>
+        </button>
+        <nav class="topnav" aria-label="Main navigation">
+            <button class="nav-btn active" data-page="home">Home</button>
+            <button class="nav-btn" data-page="jailbreak">Jailbreak</button>
+            <button class="nav-btn" data-page="payloads">Payloads</button>
+            <button class="nav-btn" data-page="tools">Tools</button>
+            <button class="nav-btn" data-page="linux">Linux</button>
+            <button class="nav-btn" data-page="offline">Offline</button>
+            <button class="nav-btn" data-page="settings" id="settings-btn">Settings</button>
+        </nav>
+        <div class="top-status">
+            <span id="topNetwork" class="status-dot"></span>
+            <span id="topFirmware">FW --</span>
+            <span id="topPayLoader" class="top-payloader">PL --</span>
+        </div>
+    </header>
+
+    <div class="app-body">
+        <!-- HOME -->
+        <section id="initial-screen" class="app-page active" data-page-panel="home">
+            <div class="page-head">
+                <div>
+                    <span class="eyebrow">PS4 HOST</span>
+                    <h1>Ready.</h1>
+                </div>
+                <span id="smartSupportBadge" class="badge neutral">CHECKING</span>
+            </div>
+
+            <div class="status-grid">
+                <div class="stat-card"><span>Firmware</span><strong id="smartFirmware">--</strong></div>
+                <div class="stat-card"><span>Exploit</span><strong id="smartChain">--</strong></div>
+                <div class="stat-card"><span>HEN</span><strong id="smartHen">--</strong></div>
+                <div class="stat-card"><span>Cache</span><strong id="smartCacheText">--</strong></div>
+            </div>
+
+            <div class="hero-card">
+                <div class="hero-copy">
+                    <h2 id="smartTitle">Detecting firmware</h2>
+                    <p id="smartSubtitle">Please wait.</p>
+                    <p id="PS4FW" class="subtle">Checking platform...</p>
+                </div>
+                <div class="hero-actions">
+                    <button id="ps-logo-container" class="primary big" type="button"><span id="click-to-start-text">Jailbreak</span></button>
+                    <button id="smartStartButton" class="button" type="button" onclick="startSmartJailbreak()">Smart Start</button>
+                    <button id="stopAutoJb" class="button danger hidden" type="button">Stop</button>
+                </div>
+            </div>
+
+            <div class="quick-grid">
+                <button class="quick-card" data-open-page="tools"><b>Tools</b><span>PS4 utilities</span></button>
+                <button class="quick-card" data-open-page="linux"><b>Linux</b><span>VRAM loaders</span></button>
+                <button class="quick-card" data-open-page="offline"><b>Offline</b><span>Install cache</span></button>
+                <button class="quick-card" type="button" onclick="Loadpayloads('load_FTP','FTP','FTP')"><b>FTP</b><span>Start server</span></button>
+                <button class="quick-card" type="button" onclick="showDiagnostics()"><b>Diagnostics</b><span>System info</span></button>
+            </div>
+
+            <div class="home-strip">
+                <div class="home-strip-head"><b>Quick Launch</b><button class="link-btn" type="button" onclick="showPage('payloads')">All</button></div>
+                <div id="homeQuickPayloads" class="home-quick-payloads"><span class="subtle">No recent payloads.</span></div>
+            </div>
+
+            <div class="tiny-status-row">
+                <span id="smartNetworkDot" class="status-dot"></span><span id="smartNetworkText">Network</span>
+                <span>•</span><span id="smartHost">Host</span>
+                <span>•</span><span id="smartNotice">Firmware status</span>
+            </div>
+        </section>
+
+        <!-- JAILBREAK -->
+        <section id="exploit-main-screen" class="app-page" data-page-panel="jailbreak">
+            <div class="page-head">
+                <div><span class="eyebrow">JAILBREAK</span><h1>Launch</h1></div>
+                <button id="exploitRun" class="primary" type="button">Start</button>
+            </div>
+
+            <div id="exploitContainer" class="two-column">
+                <div class="panel">
+                    <h3>Setup</h3>
+                    <div class="setting-line">
+                        <span>Firmware</span><strong id="jailbreakFirmware">--</strong>
+                    </div>
+                    <div class="setting-line">
+                        <span>Chain</span><strong id="jailbreakChain">Auto</strong>
+                    </div>
+                    <div class="setting-line">
+                        <span>Payload</span>
+                        <div class="segmented" id="henSelection">
+                            <label id="goldhen-label-exploit"><input type="radio" name="hen2" value="GoldHEN" onchange="saveJbFlavor(this.name,this.value)"><span>GoldHEN</span></label>
+                            <label><input type="radio" name="hen2" value="HEN" onchange="saveJbFlavor(this.name,this.value)"><span>HEN</span></label>
+                        </div>
+                    </div>
+                    <div id="autoJbContainer" class="toggle-list">
+                        <label><input id="autoStartJb" type="checkbox" onchange="setAutoStartJb(this.checked)"><span>Auto jailbreak</span></label>
+                        <label><input id="autoJbRetry" type="checkbox" onchange="setAutoJbRetry(this.checked)"><span id="autoJbRetryText">Auto retry</span></label>
+                        <label><input id="reloadAfterJbInput" type="checkbox" onchange="setReloadAfterJb(this.checked)"><span id="reloadAfterJbText">Reload after success</span></label>
+                    </div>
+                    <div class="setting-line compact-line">
+                        <span>Auto delay</span>
+                        <select id="autoStartDelay" onchange="setAutoStartDelay(this.value)">
+                            <option value="3">3s</option><option value="5">5s</option><option value="8">8s</option>
+                        </select>
+                    </div>
+                    <div class="setting-line compact-line">
+                        <span id="successRate">Success rate: 0%</span>
+                        <button class="link-btn" type="button" onclick="clearStats()">Reset</button>
+                    </div>
+                </div>
+
+                <div class="panel console-panel" id="exploit-status-panel">
+                    <div class="console-title"><h2>Status</h2><span id="state">Idle</span></div>
+                    <pre id="console"><center>Waiting...</center></pre>
+                </div>
+            </div>
+
+            <!-- compatibility-only hidden controls used by exploit code -->
+            <div class="compat-hidden" aria-hidden="true">
+                <div id="choosejb-initial"><h3>Payload</h3>
+                    <label id="goldhen-label-initial"><input type="radio" name="hen" value="GoldHEN" onchange="saveJbFlavor(this.name,this.value)">GoldHEN</label>
+                    <label><input type="radio" name="hen" value="HEN" onchange="saveJbFlavor(this.name,this.value)">HEN</label>
+                </div>
+                <input id="bareboneJBInput" type="checkbox"><button id="bareboneJB" type="button"></button>
+                <div id="chooseExploitChain"><h3 id="exploitChainTitle">Exploit chain</h3>
+                    <label id="modularLapseExp"><input type="radio" name="exploitChain" value="0" onchange="exploitChain(this.value)"><span id="modularLapse">PSFree Modular</span></label>
+                    <label id="bundleLapseExp"><input type="radio" name="exploitChain" value="1" onchange="exploitChain(this.value)"><span id="bundleLapse">PSFree Bundle</span></label>
+                    <label id="badHoistExp"><input type="radio" name="exploitChain" value="2" onchange="exploitChain(this.value)">BadHoist</label>
+                    <label id="cssFontFaceNetCtrlExp"><input type="radio" name="exploitChain" value="3" onchange="exploitChain(this.value)">CSSFontFace Netctrl</label>
+                    <label id="cssFontFaceLapseExp"><input type="radio" name="exploitChain" value="4" onchange="exploitChain(this.value)">CSSFontFace Lapse</label>
+                    <label id="slopKitLapseExp"><input type="radio" name="exploitChain" value="5" onchange="exploitChain(this.value)">SlopKit Lapse</label>
+                    <label id="slopKitNetCtrlExp"><input type="radio" name="exploitChain" value="6" onchange="exploitChain(this.value)">SlopKit Netctrl</label>
+                    <label id="relapseExp"><input type="radio" name="exploitChain" value="7" onchange="exploitChain(this.value)">Relapse</label>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAYLOADS -->
+        <section class="app-page" data-page-panel="payloads">
+            <div id="payloadsSection">
+                <div class="page-head">
+                    <div><span class="eyebrow">PAYLOADS</span><h1 id="payloads-section-title">Payloads</h1></div>
+                    <div class="page-actions">
+                        <button class="button" type="button" onclick="showRecommendedPayloads()">Recommended</button>
+                        <button class="button" type="button" onclick="showFavoritePayloads()">Favorites</button>
+                        <button class="button" type="button" onclick="showRecentPayloads()">Recent</button>
+                    </div>
+                </div>
+
+                <div class="payload-toolbar">
+                    <div class="search-box"><span>⌕</span><input id="payloadSearch" type="search" placeholder="Search"><small id="payloadSearchCount">All</small></div>
+                    <select id="hubSortSelect"><option value="default">Default</option><option value="name">A-Z</option><option value="recent">Recent</option></select>
+                    <label class="check-chip"><input id="hubCompatibleOnly" type="checkbox"><span>Compatible</span></label>
+                    <label class="check-chip"><input id="hubFavoritesOnly" type="checkbox"><span>★</span></label>
+                </div>
+                <div class="payload-tags" id="payloadTagFilters">
+                    <button class="tag-filter active" type="button" data-payload-tag="all">All</button>
+                    <button class="tag-filter" type="button" data-payload-tag="network">Network</button>
+                    <button class="tag-filter" type="button" data-payload-tag="storage">Storage</button>
+                    <button class="tag-filter" type="button" data-payload-tag="system">System</button>
+                    <button class="tag-filter" type="button" data-payload-tag="debug">Debug</button>
+                </div>
+
+                <div class="subnav" role="tablist">
+                    <button id="tools-tab" class="subnav-btn active" data-payload-tab="tools" aria-selected="true">Tools</button>
+                    <button id="advanced-tab" class="subnav-btn advancedPayloadsTab" data-payload-tab="advanced" aria-selected="false">Advanced</button>
+                    <button id="linux-tab" class="subnav-btn" data-payload-tab="linux" aria-selected="false">Linux</button>
+                </div>
+
+                <div id="payloadsGrid" class="payload-grid">
+                    <div id="tools"></div>
+                    <div id="advanced" class="hidden"></div>
+                    <div id="linux" class="hidden"></div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- TOOLS -->
+        <section class="app-page" data-page-panel="tools">
+            <div class="page-head">
+                <div><span class="eyebrow">PS4 TOOLS</span><h1>Tools</h1></div>
+                <span id="toolsFirmwareSummary" class="badge neutral">FW --</span>
+            </div>
+            <div class="tool-groups">
+                <div class="panel tool-panel">
+                    <h3>System</h3>
+                    <div class="tool-button-grid">
+                        <button class="tool-launch" data-tool-payload="DisableUpdates"><b>Disable Updates</b><span>Block updates</span></button>
+                        <button class="tool-launch" data-tool-payload="EnableUpdates"><b>Enable Updates</b><span>Restore updates</span></button>
+                        <button class="tool-launch" data-tool-payload="HistoryBlocker"><b>History Blocker</b><span>Browser history</span></button>
+                        <button class="tool-launch" data-tool-payload="FanThreshold"><b>Fan</b><span>Set threshold</span></button>
+                    </div>
+                </div>
+                <div class="panel tool-panel">
+                    <h3>Storage</h3>
+                    <div class="tool-button-grid">
+                        <button class="tool-launch" data-tool-payload="AppDumper"><b>App Dumper</b><span>Dump app</span></button>
+                        <button class="tool-launch" data-tool-payload="App2USB"><b>App2USB</b><span>Move to USB</span></button>
+                        <button class="tool-launch" data-tool-payload="BackupDB"><b>Backup DB</b><span>Backup data</span></button>
+                        <button class="tool-launch" data-tool-payload="RestoreDB"><b>Restore DB</b><span>Restore data</span></button>
+                    </div>
+                </div>
+                <div class="panel tool-panel">
+                    <h3>Debug</h3>
+                    <div class="tool-button-grid">
+                        <button class="tool-launch" data-tool-payload="PS4Debug"><b>PS4 Debug</b><span>Debug server</span></button>
+                        <button class="tool-launch" data-tool-payload="WebRTE"><b>WebRTE</b><span>RTE server</span></button>
+                        <button class="tool-launch" data-tool-payload="OrbisToolbox"><b>Orbis Toolbox</b><span>Developer UI</span></button>
+                        <button class="tool-launch" data-tool-payload="KernelDumper"><b>Kernel Dumper</b><span>Dump kernel</span></button>
+                    </div>
+                </div>
+                <div class="panel tool-panel">
+                    <h3>More</h3>
+                    <div class="tool-button-grid">
+                        <button class="tool-launch" data-tool-payload="FTP"><b>FTP</b><span>File server</span></button>
+                        <button class="tool-launch" data-tool-payload="DetectSouthbridge"><b>Southbridge</b><span>Detect chip</span></button>
+                        <button class="tool-launch" data-tool-payload="DBRebuilder"><b>DB Rebuilder</b><span>Rebuild entries</span></button>
+                        <button class="tool-launch" data-tool-payload="RIFRenamer"><b>RIF Renamer</b><span>RIF utility</span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="tool-bottom-bar">
+                <span id="toolsPayloadCount">-- compatible</span>
+                <button class="button" type="button" onclick="runLastPayload()">Run Last</button>
+                <button class="button" type="button" onclick="showPage('payloads');showRecommendedPayloads()">All Compatible</button>
+            </div>
+        </section>
+
+        <!-- LINUX -->
+        <section class="app-page" data-page-panel="linux">
+            <div class="page-head">
+                <div><span class="eyebrow">LINUX</span><h1>Linux loaders</h1></div>
+                <span class="badge good">GoldHEN PayLoader</span>
+            </div>
+            <div class="panel">
+                <div id="linuxQuickGrid" class="payload-grid standalone"></div>
+            </div>
+        </section>
+
+        <!-- OFFLINE -->
+        <section class="app-page" data-page-panel="offline">
+            <div class="page-head">
+                <div><span class="eyebrow">OFFLINE</span><h1>Cache</h1></div>
+                <span id="cacheBadge" class="badge neutral">IDLE</span>
+            </div>
+            <div class="panel cache-panel">
+                <div class="cache-ring"><span id="inlineCachePercent">0%</span></div>
+                <div class="cache-copy">
+                    <h3 id="inlineCacheStatus">Ready</h3>
+                    <p>Cache the files for this firmware.</p>
+                    <div class="progress"><div id="inlineCacheProgress"></div></div>
+                    <button id="updateCache" class="primary" type="button">Install / Update Cache</button>
+                </div>
+                <iframe id="inlineCacheFrame" src="about:blank" title="Cache worker"></iframe>
+            </div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section class="app-page" data-page-panel="settings">
+            <div class="page-head"><div><span class="eyebrow">SETTINGS</span><h1>Settings</h1></div></div>
+            <div class="settings-grid">
+                <div class="panel">
+                    <h3>Console</h3>
+                    <div class="setting-line"><span>Firmware</span><strong id="settingsFirmware">--</strong></div>
+                    <div class="setting-line"><span>PayLoader</span><strong id="payloaderStatus">Checking</strong></div>
+                    <div class="setting-line"><span>Address</span><strong>127.0.0.1:9090</strong></div>
+                    <label class="switch-line"><input id="autoFtpAfterJb" type="checkbox" onchange="setAutoFtpAfterJb(this.checked)"><span>Auto FTP after jailbreak</span></label>
+                    <div class="row-buttons">
+                        <button class="button" type="button" onclick="testLocalPayLoader()">Check PayLoader</button>
+                        <button class="button" type="button" onclick="showDiagnostics()">Diagnostics</button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>GoldHEN</h3>
+                    <div id="chooseGoldHEN" class="radio-stack">
+                        <label><input type="radio" name="goldhen" value="GHv2.4b18.12" onchange="setGoldHENVer(this.value)"><span>2.4b18.12</span><b id="latestVer">Latest in host</b></label>
+                        <label><input type="radio" name="goldhen" value="GHv2.4b18.10" onchange="setGoldHENVer(this.value)"><span>2.4b18.10</span></label>
+                        <label><input type="radio" name="goldhen" value="GHv2.4b18.9" onchange="setGoldHENVer(this.value)"><span>2.4b18.9</span></label>
+                        <label><input type="radio" name="goldhen" value="GHv2.4b18.8" onchange="setGoldHENVer(this.value)"><span>2.4b18.8</span></label>
+                        <label><input type="radio" name="goldhen" value="GHv2.4b18.7" onchange="setGoldHENVer(this.value)"><span>2.4b18.7</span></label>
+                        <label><input type="radio" name="goldhen" value="GHv2.4b18.6" onchange="setGoldHENVer(this.value)"><span>2.4b18.6</span></label>
+                    </div>
+                    <div class="service-row"><span>BinLoader 9090</span><span>FTP 2121</span><span>Klog 3232</span></div>
+                    <span id="ghVer" class="subtle">GoldHEN version</span>
+                </div>
+
+                <div class="panel">
+                    <h3>Language</h3>
+                    <div id="chooselang" class="radio-stack"><h3 class="compat-hidden">Language</h3>
+                        <label><input type="radio" name="language" value="en" onchange="saveLanguage(this.value)"><span>English</span></label>
+                        <label><input type="radio" name="language" value="es" onchange="saveLanguage(this.value)"><span>Español</span></label>
+                        <label><input type="radio" name="language" value="tr" onchange="saveLanguage(this.value)"><span>Türkçe</span></label>
+                        <label><input type="radio" name="language" value="ar" onchange="saveLanguage(this.value)"><span>العربية</span></label>
+                        <label><input type="radio" name="language" value="fa" onchange="saveLanguage(this.value)"><span>فارسی</span></label>
+                        <label><input type="radio" name="language" value="ru" onchange="saveLanguage(this.value)"><span>Русский</span></label>
+                        <label><input type="radio" name="language" value="zh-cn" onchange="saveLanguage(this.value)"><span>简体中文</span></label>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>Payloads</h3>
+                    <label class="switch-line"><input id="advancedPayloadsInput" type="checkbox" onchange="setAdvancedPayloads(this.checked)"><span id="showAdvancedPayloads">Show advanced payloads</span></label>
+                    <button class="button" type="button" onclick="clearPayloadHistory()">Clear recent payloads</button>
+                    <button class="button danger" type="button" onclick="resetSlopBreakSettings()">Reset settings</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer"><span>SlopBreak 3.1</span><span id="footerMode">PS4 only</span></footer>
+
+    <!-- hidden compatibility / legacy hooks -->
+    <div class="compat-hidden">
+        <button id="about-btn" type="button"></button>
+        <div id="header2"></div>
+        <span id="optionsHeader"></span><span id="layout"></span><span id="layouts"></span><span id="themeWord"></span>
+        <span id="defaultTheme"></span><span id="compactTheme"></span><span id="defaultColor"></span><span id="vibrantColor"></span><span id="catppuccinoColor"></span>
+        <div id="defaultTempDiv"><span id="defaultTemp">Default</span></div>
+        <div id="PS4FWOK"><h3></h3></div><div id="listfw"></div><div id="goldhenFirmwareSemiSupported"><i></i></div><span id="creditsHeader"></span>
+        <span id="smartCacheLegacy"></span>
+    </div>
+
+    <!-- payload details -->
+    <div id="payloadDetailsOverlay" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-head"><h2 id="payloadDetailName">Payload</h2><button type="button" onclick="closePayloadDetails()">×</button></div>
+            <p id="payloadDetailAuthor" class="subtle"></p>
+            <p id="payloadDetailDescription"></p>
+            <div class="modal-meta"><span id="payloadDetailFirmware"></span><span id="payloadDetailCompatibility"></span><span id="payloadDetailSource"></span><span id="payloadDetailLastUsed"></span></div>
+            <div class="row-buttons"><button id="payloadDetailFavoriteButton" class="button" type="button">☆ Favorite</button><button id="payloadDetailLaunchButton" class="primary" type="button">Launch</button></div>
+        </div>
+    </div>
+
+    <div id="diagnosticsOverlay" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-head"><h2>Diagnostics</h2><button type="button" onclick="closeDiagnostics()">×</button></div>
+            <pre id="diagnosticsText" class="diagnostics-text"></pre>
+            <div class="row-buttons"><button class="button" type="button" onclick="closeDiagnostics()">Close</button></div>
+        </div>
+    </div>
+
+    <!-- fan threshold -->
+    <div id="choose-fanThreshold-overlay" class="modal-overlay hidden">
+        <div id="choose-fanThreshold" class="modal-card">
+            <div class="modal-head"><h2>Fan Threshold</h2><button id="close-fanChoose" type="button" onclick="chooseFanThreshold()">×</button></div>
+            <p>Choose temperature.</p>
+            <div class="fan-grid">
+                <button type="button" onclick="sessionStorage.setItem('fanTemp','60');Loadpayloads('load_FanThreshold','Fan 60°C','FanThreshold')">60°C</button>
+                <button type="button" onclick="sessionStorage.setItem('fanTemp','70');Loadpayloads('load_FanThreshold','Fan 70°C','FanThreshold')">70°C</button>
+                <button type="button" onclick="sessionStorage.setItem('fanTemp','80');Loadpayloads('load_FanThreshold','Fan 80°C','FanThreshold')">80°C</button>
+                <button type="button" onclick="sessionStorage.setItem('fanTemp','85');Loadpayloads('load_FanThreshold','Fan 85°C','FanThreshold')">85°C</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    window.onerror = function (msg, url, line) {
+        console.error(msg, url, line);
+        return false;
+    };
+    var ua = navigator.userAgent;
+    var isPS4 = ua.indexOf('PlayStation 4') !== -1;
+    var is67x = ua.indexOf(' 6.70') !== -1 || ua.indexOf(' 6.71') !== -1 || ua.indexOf(' 6.72') !== -1;
+    window.entrypoint672_result = 0;
+    window.exploitsetup672_result = 0;
+    var jailbreakNow = sessionStorage.getItem('jailbreakNow') != null;
+    if (isPS4 && is67x && jailbreakNow) {
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'src/badhoist/672entrypoint.js', false);
+            xhr.send('');
+            if (xhr.status === 200) eval.call(top.window, xhr.responseText);
+        } catch (e) { console.error(e); }
+    }
+</script>
+<script id="main-logic-loader">
+(function () {
+    var isModern = 'noModule' in document.createElement('script');
+    var scriptPath = isModern ? './includes/js/index.js' : './includes/js/index-legacy.js';
+    document.write('<script src="' + scriptPath + '"><\/script>');
+})();
+</script>
+<script src="./includes/payloads/payloads.js"></script>
+<script src="./includes/js/payloadsList.js"></script>
+<script src="./includes/js/language.js"></script>
+<script src="./includes/js/HENs.js"></script>
+<script src="./includes/js/firmwareProfiles.js"></script>
+<script src="./includes/js/checkFw.js"></script>
+<script src="./includes/js/autoJbRetry.js"></script>
+<script src="./includes/js/payloadsHandler.js"></script>
+<script src="./includes/js/payloadHub.js"></script>
+<script src="./includes/js/utilities.js"></script>
+<script src="./includes/js/modernFeatures.js"></script>
+<script src="./includes/js/spa.js"></script>
+<script src="./includes/js/events.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.abortLoading) return;
+    if (typeof loadSettings === 'function') loadSettings();
+});
+</script>
+</body>
+</html>
